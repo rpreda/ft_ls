@@ -1,5 +1,40 @@
 #include "ft_ls.h"
-// NEED PATH CLEANING FUNCTION FOR THE dir////// (!!!!!) filename fails else
+// NEED PATH CLEANING FUNCTION FOR THE dir////// (!!!!!) filename fails elsei
+
+static size_t	count_digits(long long n)
+{
+	size_t	i;
+
+	i = 1;
+	while (n /= 10)
+		i++;
+	return (i);
+}
+
+char			*ft_itoa_long(long long n)
+{
+	size_t				len;
+	char				*str;
+	unsigned long long	u_nbr;
+
+	len = count_digits(n);
+	u_nbr = n;
+	if (n < 0)
+	{
+		u_nbr = -n;
+		len++;
+	}
+	if (!(str = ft_strnew(len)))
+		return (NULL);
+	str[--len] = u_nbr % 10 + '0';
+	while (u_nbr /= 10)
+		str[--len] = u_nbr % 10 + '0';
+	if (n < 0)
+		str[0] = '-';
+	return (str);
+}
+//above itoa implementation for long long
+//should be moved to aux file
 char *ft_filename(char *path)
 {
 	char	*found;
@@ -65,6 +100,8 @@ char *ft_build_acces(mode_t mode)
 t_infos	*build_data(struct stat *s_stat, char *usr, char *grp, char *path)
 {
 	t_infos *t_inf;
+	time_t	time_helper;
+	char *str;
 
 	t_inf = (t_infos *)malloc(sizeof(t_infos));
 	t_inf->usrname = ft_strdup(usr);
@@ -72,6 +109,14 @@ t_infos	*build_data(struct stat *s_stat, char *usr, char *grp, char *path)
 	t_inf->filename = ft_filename(path);
 	t_inf->acces = ft_build_acces(s_stat->st_mode);
 	t_inf->links = ft_itoa((int)s_stat->st_nlink);
+	t_inf->path = ft_strdup(path);
+	t_inf->bytesize = ft_itoa_long(s_stat->st_size);
+	t_inf->epoch_time = s_stat->st_mtime;
+	time_helper = s_stat->st_mtime;
+	str = ctime(&time_helper);
+	str[16] = '\0';
+	t_inf->date_formated = ft_strdup(str + 4);
+	t_inf->blksize = s_stat->st_blksize;
 	return (t_inf);
 }
 t_infos *grab_infos(char *path, int type)
@@ -114,6 +159,7 @@ t_infos *grab_infos(char *path, int type)
 	free(s_stat);
 	return (t_nf);
 }
+/*
 int main(int argc, char **argv)
 {
 	t_infos *ret;
@@ -125,5 +171,8 @@ int main(int argc, char **argv)
 	printf("%s\n", ret->filename);//filename works
 	printf("%s\n", ret->acces);//acces works
 	printf("%s\n", ret->links);//link number works
+	printf("%s\n", ret->path);//path works
+	printf("%s\n", ret->bytesize);//bytesize work
+	printf("%s\n", ret->date_formated);//date_time formated
 	return (0);
-}
+}*/

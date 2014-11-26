@@ -9,6 +9,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
 #include "libft.h"
 
 typedef struct		s_infos
@@ -20,8 +21,8 @@ typedef struct		s_infos
 	char			*usrname;
 	char			*usrgrp;
 	char			*bytesize;
-	char			*date_fromated;
-	struct timespec	epoch_time;
+	char			*date_formated;
+	time_t			epoch_time;
 	u_long 			blksize;
 }					t_infos;
 
