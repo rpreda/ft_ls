@@ -95,7 +95,7 @@ char *ft_build_acces(mode_t mode)
 	if (mode & S_IXOTH)
 		acces[9] = 'x';
 	return (acces);
-		
+
 }
 t_infos	*build_data(struct stat *s_stat, char *usr, char *grp, char *path)
 {
@@ -119,7 +119,7 @@ t_infos	*build_data(struct stat *s_stat, char *usr, char *grp, char *path)
 	t_inf->blksize = s_stat->st_blksize;
 	return (t_inf);
 }
-t_infos *grab_infos(char *path, int type)
+t_infos *grab_infos(char *path)
 {
 	struct stat		*s_stat;
 	struct passwd	*s_passwd;
@@ -129,42 +129,26 @@ t_infos *grab_infos(char *path, int type)
 	s_stat = (struct stat *)malloc(sizeof(struct stat));
 	s_passwd = (struct passwd *)malloc(sizeof(struct passwd));
 	s_group = (struct group *)malloc(sizeof(struct group));
-	if (type)
+	if (lstat(path, s_stat) == 0)
 	{
-		if (stat(path, s_stat) == 0)
-		{
-			s_passwd = getpwuid(s_stat->st_uid);
-			s_group = getgrgid(s_passwd->pw_gid);
-		}
-		else
-		{
-			perror("ft_ls");//Handle errors
-			return (NULL);
-		}
+		s_passwd = getpwuid(s_stat->st_uid);
+		s_group = getgrgid(s_passwd->pw_gid);
 	}
 	else
 	{
-		if (stat(path, s_stat) == 0)
-		{
-			s_passwd = getpwuid(s_stat->st_uid);
-			s_group = getgrgid(s_passwd->pw_gid);
-		}
-		else
-		{
-			perror("ft_ls");//Handle errors
-			return (NULL);//VERY IMPORTANT
-		}
+		perror("ft_ls");//Handle errors
+		return (NULL);
 	}
 	t_nf = build_data(s_stat, s_passwd->pw_name, s_group->gr_name, path);
 	free(s_stat);
 	return (t_nf);
 }
-/*
+
 int main(int argc, char **argv)
 {
 	t_infos *ret;
 
-	ret = grab_infos(argv[1], 1);
+	ret = grab_infos(argv[1]);
 	(void)argc;
 	printf("%s\n", ret->usrname);//username working
 	printf("%s\n", ret->usrgrp);//group working
@@ -175,4 +159,4 @@ int main(int argc, char **argv)
 	printf("%s\n", ret->bytesize);//bytesize work
 	printf("%s\n", ret->date_formated);//date_time formated
 	return (0);
-}*/
+}

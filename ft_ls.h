@@ -27,11 +27,12 @@ typedef struct		s_infos
 }					t_infos;
 
 t_infos	*build_data(struct stat *s_stat, char *usr, char *grp, char *path);
-t_infos *grab_infos(char *path, int type);
+t_infos *grab_infos(char *path);
 
 char *ft_filename(char *path);
 
 char *ft_build_acces(mode_t mode);
 char type_helper(mode_t mode);
 
+char *interpret_args(int argc, char **argv, int *s_args, int *p_args);
 #endif
