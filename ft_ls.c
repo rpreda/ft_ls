@@ -1,27 +1,71 @@
 #include "ft_ls.h"
+int g_sargs;
+int g_pargs;
+int g_oargs;
+int g_hargs;
 
-char *interpret_args(int argc, char **argv, int *s_args, int *p_args, int *o_args)
+void arg_interpret(char *s)
+{
+	while (*s++)
+	{
+		if (*s == 'l')
+			g_pargs = 1;
+		if (*s == 'a')
+			g_hargs = 1;
+		if (*s == 'R')
+			g_sargs = 1;
+		if (*s == 'r')
+			g_oargs = 1;
+		if (*s == 't')
+			g_oargs = 2;
+	}
+}
+
+char **interpret_args(int argc, char **argv)
 {
 	int found_file;
 	int i;
+	char **ret;
+	int k;
 
-	i = 0;
+	i = 1;
+	k = 0;
+	ret = (char **)malloc(sizeof(char *) * 100);
+	
 	found_file = 0;
-	*s_args = 0;
-	*p_args = 0;
-	*o_args = 0;
 	while (i < argc)
 	{
-		if (argv
+		if (argv[i][0] == '-')
+			arg_interpret(argv[i]);
+		else
+		{
+			ret[k] = ft_strdup(argv[i]);
+			k++;
+		}
+		i++;
 	}
+	if(!k)
+	{
+		ret[k] = ".";
+		k = 1;
+	}
+	ret[k] = NULL;
+	return (ret);
 }
+
 int main(int argc, char **argv)
 {
-	char	*path;
-	int		source_args;
-	int		print_args;
-	int		order_args;
+	char	**paths;
+	int i = 0;
 
-	path = interpret_args(argc, argv, &source_args, &print_args, &order_args);
+	paths = interpret_args(argc, argv);
+	sort_matrix(paths);
+	
+	printf("s_args %d p_args %d o_args %d h_args %d\n", g_sargs, g_pargs, g_oargs, g_hargs);
+	while (paths[i])
+	{
+		printf("path-> %s\n", paths[i]);
+		i++;
+	}
 	return (0);
 }

@@ -34,5 +34,7 @@ char *ft_filename(char *path);
 char *ft_build_acces(mode_t mode);
 char type_helper(mode_t mode);
 
-char *interpret_args(int argc, char **argv, int *s_args, int *p_args);
+char **interpret_args(int argc, char **argv);
+void sort_matrix(char **matrix);
+
 #endif

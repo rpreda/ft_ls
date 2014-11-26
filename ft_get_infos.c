@@ -149,7 +149,7 @@ int main(int argc, char **argv)
 	t_infos *ret;
 
 	ret = grab_infos(argv[1]);
-	(void)argc;
+	printf("%dARGC\n",argc);
 	printf("%s\n", ret->usrname);//username working
 	printf("%s\n", ret->usrgrp);//group working
 	printf("%s\n", ret->filename);//filename works
