@@ -31,7 +31,6 @@ char **interpret_args(int argc, char **argv)
 	i = 1;
 	k = 0;
 	ret = (char **)malloc(sizeof(char *) * 100);
-	
 	found_file = 0;
 	while (i < argc)
 	{
@@ -61,7 +60,7 @@ int main(int argc, char **argv)
 	paths = interpret_args(argc, argv);
 	sort_matrix(paths);
 	
-	printf("s_args %d p_args %d o_args %d h_args %d\n", g_sargs, g_pargs, g_oargs, g_hargs);
+	printf("s_ %d p_ %d o_ %d h_ %d\n", g_sargs, g_pargs, g_oargs, g_hargs);
 	while (paths[i])
 	{
 		printf("path-> %s\n", paths[i]);

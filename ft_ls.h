@@ -26,6 +26,15 @@ typedef struct		s_infos
 	u_long 			blksize;
 }					t_infos;
 
+typedef struct		s_pque
+{
+					void *content;
+					size_t content_type;
+					int	content_type;
+					struct s_lista *next;
+}
+					t_lista;
+
 t_infos	*build_data(struct stat *s_stat, char *usr, char *grp, char *path);
 t_infos *grab_infos(char *path);
 
