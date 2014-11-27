@@ -55,16 +55,21 @@ char **interpret_args(int argc, char **argv)
 int main(int argc, char **argv)
 {
 	char	**paths;
-	int i = 0;
+	int		d_names;
 
 	paths = interpret_args(argc, argv);
 	sort_matrix(paths);
-	
+	if (paths[1])
+		d_names = 1;
+	else
+		d_names = 0;
+	/*
 	printf("s_ %d p_ %d o_ %d h_ %d\n", g_sargs, g_pargs, g_oargs, g_hargs);
 	while (paths[i])
 	{
 		printf("path-> %s\n", paths[i]);
 		i++;
-	}
+	}*/
+	paths_now_what(paths, d_names);
 	return (0);
 }

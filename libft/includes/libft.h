@@ -16,12 +16,6 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-typedef struct		s_list
-{
-	void			*content;
-	size_t			content_size;
-	struct s_list	*next;
-}					t_list;
 void				*ft_memset(void *ptr, int c, size_t len);
 void				ft_bzero(void *ptr, size_t len);
 void				*ft_memcpy(void *dst, const void *src, size_t n);
@@ -75,11 +69,6 @@ int					ft_isspace(int c);
 char				*ft_strtrim(char const *s);
 char				**ft_strsplit(char const *s, char c);
 char				*ft_itoa(int n);
-t_list				*ft_lstnew(void const *content, size_t content_size);
-void				ft_lstdelone(t_list **alst, void (*del)(void *, size_t));
-void				ft_lstdel(t_list **alst, void (*del)(void *, size_t));
-void				ft_lstadd(t_list **alst, t_list *new);
-void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 char				*ft_strpush(char *s, char c);
 
 #endif

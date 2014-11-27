@@ -143,7 +143,7 @@ t_infos *grab_infos(char *path)
 	free(s_stat);
 	return (t_nf);
 }
-
+/*
 int main(int argc, char **argv)
 {
 	t_infos *ret;
@@ -159,4 +159,4 @@ int main(int argc, char **argv)
 	printf("%s\n", ret->bytesize);//bytesize work
 	printf("%s\n", ret->date_formated);//date_time formated
 	return (0);
-}
+}*/
