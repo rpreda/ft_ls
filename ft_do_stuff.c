@@ -22,7 +22,36 @@ char	*ft_memconcat(char *s1, char *s2)
 	else
 		return (ret_str);
 }
+void ft_new_r(t_lista **n, t_lista **list, t_lista **first, struct dirent *dp)
+{
+	t_lista *aux;
 
+	aux = (*list);
+	while ((*list))
+	{
+		if (ft_strcmp(dp->d_name, (*list)->content) > 0)
+		{
+			if (aux == (*list))
+			{
+				(*n)->next = (*list);
+				(*first) = (*n);
+			}
+			else
+			{
+				(*n)->next = aux->next;
+				aux->next = (*n);
+			}
+			break ;
+		}
+		aux = (*list);
+		(*list) = (*list)->next;
+	}
+	if (!(*list))
+	{
+		(*n)->next = 0;
+		aux->next = (*n);
+	}
+}
 void ft_new(t_lista **n, t_lista **list, t_lista **first, struct dirent *dp)
 {
 	t_lista *aux;
@@ -30,7 +59,7 @@ void ft_new(t_lista **n, t_lista **list, t_lista **first, struct dirent *dp)
 	aux = (*list);
 	while ((*list))
 	{
-		if (ft_strcmp(dp->d_name, (*list)->content) <0)
+		if (ft_strcmp(dp->d_name, (*list)->content) < 0)
 		{
 			if (aux == (*list))
 			{
@@ -72,7 +101,10 @@ void lst_add(t_lista **list, struct dirent *dp)
 		new->content = ft_strdup(dp->d_name);
 		new->content_size = dp->d_reclen;
 		new->content_type = dp->d_type;
-		ft_new(&new, list, &first, dp);
+		if (g_oargs == 0)//here is decided the printing order
+			ft_new(&new, list, &first, dp);
+		if (g_oargs == 1)
+			ft_new_r(&new, list, &first, dp);
 		(*list) = first;
 	}
 }
@@ -120,20 +152,17 @@ void ft_add_spaces(size_t max_len, char **string)//adds spaces for printing
 char *assemble_string(t_lista *elem,  t_len *lens)
 {
 	char *ret_val;
-	char spacestr[2];
 
-	spacestr[0] = ' ';
-	spacestr[1] = '\0';
-	ret_val = ft_strjoin(elem->infos->acces, spacestr);
+	ret_val = ft_strjoin(elem->infos->acces, "  ");
 	ft_add_spaces(lens->links_len, &(elem->infos->links));
 	ret_val = ft_memconcat(ret_val, elem->infos->links);
 	ret_val = ft_memconcat(ret_val, " ");
 	ft_add_spaces(lens->username_len, &(elem->infos->usrname));
 	ret_val = ft_memconcat(ret_val, elem->infos->usrname);
-	ret_val = ft_memconcat(ret_val, " ");
+	ret_val = ft_memconcat(ret_val, "  ");
 	ft_add_spaces(lens->usrgrp_len, &(elem->infos->usrgrp));
 	ret_val = ft_memconcat(ret_val, elem->infos->usrgrp);
-	ret_val = ft_memconcat(ret_val, " ");
+	ret_val = ft_memconcat(ret_val, "  ");
 	ft_add_spaces(lens->bytesize_len, &(elem->infos->bytesize));
 	ret_val = ft_memconcat(ret_val, elem->infos->bytesize);
 	ret_val = ft_memconcat(ret_val, " ");
@@ -143,13 +172,32 @@ char *assemble_string(t_lista *elem,  t_len *lens)
 	return (ret_val);
 	//posibil un free la lens aici
 }
+int ft_add_blocksize(t_lista *list, char hidden)
+{
+	int ret;
+
+	ret = 0;
+	while (list)
+	{
+		if (*((char *)list->content) != hidden)
+			ret = ret + (int)list->infos->blksize;
+		list = list->next;
+	}
+	return (ret);
+}
 void ft_print(t_lista *list, t_len *lens)
 {
-	char hidden;
+	char	hidden;
 
 	hidden = 0;
 	if (!g_hargs)
 		hidden = '.';
+	if (g_pargs)
+	{
+		ft_putstr("total ");
+		ft_putnbr(ft_add_blocksize(list, hidden));
+		ft_putendl("");
+	}
 	while (list)
 	{
 		if (*((char *)list->content) != hidden)
@@ -172,9 +220,7 @@ void print_dir(DIR *directory, char *dir_path)
 	list = NULL;
 	while ((temp = readdir(directory)) != NULL)
 		lst_add(&list, temp);
-	//ft_build_print_data(list, dir_path);
 	ft_print(list, ft_build_print_data(list, dir_path));
-	//free list at the end	
 }
 
 void paths_now_what(char **paths, int put_dirnames)
@@ -190,6 +236,22 @@ void paths_now_what(char **paths, int put_dirnames)
 	{
 		if (lstat(paths[i], s_stat) == 0)
 		{
+			if(!(S_ISDIR(s_stat->st_mode)))
+			{
+				ft_putendl(paths[i]);
+				free(s_stat);
+				s_stat = (struct stat *)malloc(sizeof(struct stat));
+			}
+		}
+		else
+			perror("ft_ls: ");
+		i++;
+	}
+	i = 0;
+	while (paths[i])
+	{
+		if (lstat(paths[i], s_stat) == 0)
+		{
 			if (S_ISDIR(s_stat->st_mode))
 			{
 				free(s_stat);
@@ -201,8 +263,8 @@ void paths_now_what(char **paths, int put_dirnames)
 						ft_putstr(paths[i]);
 						ft_putendl(":");
 					}
-					print_dir(directory, ft_strdup(paths[i]));//destructive function send copy
-					if (paths[i + 1])//requires normal files delted from matrix
+					print_dir(directory, ft_strdup(paths[i]));
+					if (paths[i + 1])
 						ft_putendl("");
 					closedir(directory);
 				}

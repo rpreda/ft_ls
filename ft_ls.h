@@ -46,6 +46,7 @@ typedef struct		s_pque
 
 t_infos	*build_data(struct stat *s_stat, char *usr, char *grp, char *path);
 t_infos *grab_infos(char *path);
+char			*ft_itoa_long(long long n);
 
 char *ft_filename(char *path);
 

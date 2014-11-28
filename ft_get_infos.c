@@ -1,5 +1,4 @@
 #include "ft_ls.h"
-// NEED PATH CLEANING FUNCTION FOR THE dir////// (!!!!!) filename fails elsei
 
 static size_t	count_digits(long long n)
 {
@@ -46,7 +45,7 @@ char *ft_filename(char *path)
 		return (ft_strdup(found));	
 	return (NULL);
 }
-char type_helper(mode_t mode)//type helper may land me -42
+char type_helper(mode_t mode)
 {
 	if (S_ISDIR(mode))
 		return ('d');
@@ -116,7 +115,7 @@ t_infos	*build_data(struct stat *s_stat, char *usr, char *grp, char *path)
 	str = ctime(&time_helper);
 	str[16] = '\0';
 	t_inf->date_formated = ft_strdup(str + 4);
-	t_inf->blksize = s_stat->st_blksize;
+	t_inf->blksize = s_stat->st_blocks;
 	return (t_inf);
 }
 t_infos *grab_infos(char *path)
